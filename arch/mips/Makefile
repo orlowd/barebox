@@ -13,7 +13,7 @@ else
 64bit-emul		= elf64btsmip
 endif
 
-KBUILD_CPPFLAGS += -D__MIPS__ -fno-strict-aliasing -fno-merge-constants
+KBUILD_CPPFLAGS += -D__MIPS__ -fno-strict-aliasing
 
 cflags-y += -G 0 -mno-abicalls -fno-pic -pipe
 cflags-y += -Wall -Wstrict-prototypes \

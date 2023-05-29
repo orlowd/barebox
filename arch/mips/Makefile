@@ -29,22 +29,14 @@ ld-emul		= $(64bit-emul)
 cflags-y	+= -mabi=64
 endif
 
-undef-all += -UMIPSEB -U_MIPSEB -U__MIPSEB -U__MIPSEB__
-undef-all += -UMIPSEL -U_MIPSEL -U__MIPSEL -U__MIPSEL__
-predef-be += -DMIPSEB -D_MIPSEB -D__MIPSEB -D__MIPSEB__
-predef-le += -DMIPSEL -D_MIPSEL -D__MIPSEL -D__MIPSEL__
+KBUILD_LDFLAGS += -m $(ld-emul)
 
-ifdef CONFIG_CPU_BIG_ENDIAN
-cflags-y += $(shell $(CC) -dumpmachine |grep -q 'mips.*el-.*' && echo -EB $(undef-all) $(predef-be))
-mips-ldflags-y += $(shell $(CC) -dumpmachine |grep -q 'mips.*el-.*' && echo -EB )
-endif
+mips-endian-$(CONFIG_CPU_LITTLE_ENDIAN)	:= -EL
+mips-endian-$(CONFIG_CPU_BIG_ENDIAN)	:= -EB
 
-ifdef CONFIG_CPU_LITTLE_ENDIAN
-cflags-y += $(shell $(CC) -dumpmachine |grep -q 'mips.*el-.*' || echo -EL $(undef-all) $(predef-le))
-mips-ldflags-y += $(shell $(CC) -dumpmachine |grep -q 'mips.*el-.*' || echo -EL )
-endif
+cflags-y	+= $(mips-endian-y)
+KBUILD_LDFLAGS	+= $(mips-endian-y)
 
-KBUILD_LDFLAGS += $(mips-ldflags-y) -m $(ld-emul)
 LDFLAGS_barebox += $(KBUILD_LDFLAGS)
 LDFLAGS_pbl += $(KBUILD_LDFLAGS)
 
